@@ -1,10 +1,11 @@
 package question_test
 
 import (
-	"github.com/Pallinder/go-randomdata"
-	"github.com/sumory/idgen"
 	"stream_test"
 	"testing"
+
+	"github.com/Pallinder/go-randomdata"
+	"github.com/sumory/idgen"
 )
 
 // ----------------------------------------
