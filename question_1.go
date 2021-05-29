@@ -38,23 +38,30 @@ func Question1Sub2(employees []*Employee) []*Employee {
 
 // - Q3: - 输入 employees，对于没有手机号为0的数据，随机填写一个
 func Question1Sub3(employees []*Employee) []*Employee {
-	stream.OfSlice(employees).Filter(func(t types.T) bool {
-		return t.(*Employee).Phone == nil || *t.(*Employee).Phone == ""
-	}).Traverse(func(t types.T) {
-		tt := randomdata.PhoneNumber()
-		t.(*Employee).Phone = &tt
-	})
-	return employees
+	return stream.OfSlice(employees).ReduceWith(make([]*Employee, 0, len(employees)), func(r types.R, t types.T) types.R {
+		a := t.(*Employee)
+		var ap string
+		ap = *a.Phone
+		if ap == "" {
+			ap = randomdata.PhoneNumber()
+		}
+		tt := &Employee{
+			Id:       a.Id,
+			Name:     a.Name,
+			Age:      a.Age,
+			Position: a.Position,
+			Phone:    &ap,
+		}
+		return append(r.([]*Employee), tt)
+	}).([]*Employee)
 }
 
 // - Q4: - 输入 employees ，返回一个map[int][]int，其中 key 为 员工年龄 Age，value 为该年龄段员工ID
 func Question1Sub4(employees []*Employee) map[int][]int64 {
-	ret := make(map[int][]int64)
-	stream.OfSlice(employees).ReduceWith(ret, func(r types.R, t types.T) types.R {
+	return stream.OfSlice(employees).ReduceWith(make(map[int][]int64, 100), func(r types.R, t types.T) types.R {
 		rr := r.(map[int][]int64)
 		tt := t.(*Employee)
 		rr[*tt.Age] = append(rr[*tt.Age], tt.Id)
 		return rr
-	})
-	return ret
+	}).(map[int][]int64)
 }
