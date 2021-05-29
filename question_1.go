@@ -38,11 +38,11 @@ func Question1Sub2(employees []*Employee) []*Employee {
 
 // - Q3: - 输入 employees，对于没有手机号为0的数据，随机填写一个
 func Question1Sub3(employees []*Employee) []*Employee {
-	stream.OfSlice(employees).Peek(func(t types.T) {
-		if a := t.(*Employee); a.Phone == nil || *a.Phone == "0" {
-			tt := randomdata.PhoneNumber()
-			a.Phone = &tt
-		}
+	stream.OfSlice(employees).Filter(func(t types.T) bool {
+		return t.(*Employee).Phone == nil || *t.(*Employee).Phone == ""
+	}).Traverse(func(t types.T) {
+		tt := randomdata.PhoneNumber()
+		t.(*Employee).Phone = &tt
 	})
 	return employees
 }
